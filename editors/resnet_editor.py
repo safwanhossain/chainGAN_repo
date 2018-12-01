@@ -15,9 +15,9 @@ import torch.optim as optim
 from torch.autograd import Variable
 from torch.utils.data import DataLoader
 
-class Resnet_Editor(nn.Module):
+class resnet_editor(nn.Module):
     def __init__(self, d):
-        super(Resnet_Editor, self).__init__()
+        super(resnet_editor, self).__init__()
         self.d = d
         assert self.d > 0, "Resnet dimension must be greater than zero. Sorry!"
         assert self.d % 3 == 0, "Resnet dimension must be divisible by 3. Sorry!"
@@ -106,7 +106,7 @@ class Resnet_Editor(nn.Module):
         return x
 
 def unit_test():
-    test_gen = Resnet_Editor(102)
+    test_gen = resnet_editor(102)
 
     images = torch.rand((10, 3, 32, 32))              # Gets us 10 batches of noise (100 dim)
     output = test_gen.forward(images)

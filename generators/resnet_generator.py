@@ -13,9 +13,9 @@ import utils
 
 # Class:
 
-class resGen(nn.Module):
+class resnet_generator(nn.Module):
     def __init__(self, d=128):
-        super(resGen, self).__init__()
+        super(resnet_generator, self).__init__()
         self.d = d
         # ====== LAYERS ======
         self.lin = nn.Sequential(
@@ -82,7 +82,7 @@ class resGen(nn.Module):
         return out
 
 def unit_test():
-    test_gen = resGen(64)
+    test_gen = resnet_generator(64)
     
     z = torch.randn((10, 128))
     output = test_gen(z)

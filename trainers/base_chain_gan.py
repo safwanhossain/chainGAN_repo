@@ -189,24 +189,5 @@ class base_chain_gan(object):
                              'Discriminator' : self.D.state_dict(),
                              'Generators' : self.G.state_dict(),
                              'D_optimizers' : G_optimizers_dict }
-                file_name = directory_name + '/model_trained_' + str(epoch) + '.tar'
+                file_name = self.directory_name + '/model_trained_' + str(epoch) + '.tar'
                 torch.save(save_dict, file_name)
-            
-def train():
-    if not os.path.exists(directory_name):
-        os.makedirs(directory_name)
-    if not os.path.exists(directory_name + '/d_scores'):
-        os.makedirs(directory_name + '/d_scores')
-    if not os.path.exists(directory_name + '/wass_distance'):
-        os.makedirs(directory_name + '/wass_distance')
-    
-    mnist_train_data, mnist_train_labels = utils.get_data()
-    
-    my_dataset = utils.create_dataset(mnist_train_data, mnist_train_labels, 64) 
-    test_gan = base_chain_gan(my_dataset)
-    
-    test_gan.train()
-
-if __name__ == "__main__":
-    train() 
-

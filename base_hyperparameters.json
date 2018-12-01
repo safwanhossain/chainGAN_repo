@@ -1,4 +1,10 @@
-{   "edit_dim": 18,
+{   "generator_name" : "DCGAN_generator",
+    "discriminator_name" : "DCGAN_discriminator",
+    "editor_name" : "resnet_editor",
+    "trainer_name" : "base_chain_gan",
+    
+    "num_editors" :4,   
+    "edit_dim": 18,
     "gen_dim": 256,
     "dis_dim":128, 
     "batch_size":64,
@@ -7,5 +13,6 @@
     "gp" :10, 
     "ncritic" : 5, 
     "lr" : 0.0001, 
-    "betas" : [0.5, 0.9] }
+    "betas" : [0.5, 0.9] 
+}
 

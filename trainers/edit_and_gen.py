@@ -6,48 +6,36 @@ import torch.nn as nn
 from utils import normal_init
 
 class EditAndGen(nn.Module):
-    def __init__(self, base_gen_class, base_edit_class, num_edit):
+    def __init__(self, base_gen_object, editor_object_list, num_edit):
         super(EditAndGen, self).__init__()
         
         # @yuchen commenting these lines out saves no significant memory.
         # these modules are truly tiny.
         
-        self.mods = nn.ModuleList([base_gen_class()])
-        self.mods.extend([base_edit_class() for i in range(num_edit)])
+        self.mods = nn.ModuleList([base_gen_object])
+        self.mods.extend(editor_object_list)
         self.param_groups = [list(m.parameters()) for m in self.mods]
 
     def weight_init(self, mean, std):
         for m in self.mods:
             normal_init(m, mean, std)
     
-    # === Training discriminator
-    
-    def forwardGenerateDetached(self, x, upto):
-        "Safwan's efficient generator (cleaned by Yuchen)."
-        todo = x
-        for i in range(upto):
-            todo = self.mods[i](todo)
-            todo = todo.clone().detach()
-        return todo
-    
-    # === Training generators
-    
-    def forward(self, x):
-        todo = x
+    def forward(self, z):
+        curr_inp = z
         all_images = []
         for i in range(len(self.mods)):
-            todo = self.mods[i](todo).detach()
-            all_images.append(todo.clone())
+            curr_inp = self.mods[i](curr_inp).detach()
+            all_images.append(curr_inp.clone())
         return all_images
         
-    def forwardGenerate(self, x, upto):
-        todo = x
+    def generate_upto(self, z, upto):
+        """ Generates upto but not including the var upto"""
+        curr_inp = z
         i = -1
         for i in range(upto - 1):
-            todo = self.mods[i](todo).clone().detach()
-        todo = self.mods[i+1](todo.clone())
-        print(todo.shape)
-        return todo
+            curr_inp = self.mods[i](curr_inp).clone().detach()
+        curr_inp = self.mods[i+1](curr_inp.clone())
+        return curr_inp
         
 class EditAndGenLabels(nn.Module):
     

@@ -7,9 +7,9 @@ import torch.nn as nn
 from utils import normal_init
 import utils
         
-class DCGAN_Generator(nn.Module):
+class DCGAN_generator(nn.Module):
     def __init__(self, d=256):
-        super(DCGAN_Generator, self).__init__()
+        super(DCGAN_generator, self).__init__()
         # ====== LAYERS ======
         self.d = d
         self.reshape_no_labels = nn.Sequential(
@@ -47,7 +47,7 @@ class DCGAN_Generator(nn.Module):
         
 def unit_test():
     # Some sanity checks for the generator
-    test_gen = DCGAN_Generator(d=256)
+    test_gen = DCGAN_generator(d=256)
 
     noise = torch.rand((10, 128))              # Gets us 10 batches of noise (100 dim)
     output_withlabels = test_gen.forward(noise)

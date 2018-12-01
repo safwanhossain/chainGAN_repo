@@ -7,14 +7,13 @@ import torch.nn as nn
 from utils import normal_init
 import utils
 
-class DCGAN_Discriminator(nn.Module):
-    def __init__(self, edit_num, dim=128):
-        super(DCGAN_Discriminator, self).__init__()
+class DCGAN_discriminator(nn.Module):
+    def __init__(self, edit_num, d=128):
+        super(DCGAN_discriminator, self).__init__()
         self.num_last_layers = 1 + edit_num
         self.last_layers = nn.ModuleList([])
 
         # ====== LAYERS ======
-        d = dim
         self.conv1 = nn.Sequential(
             # Conv1 - Go from 32x32 to 16x16
             nn.Conv2d(3, d, kernel_size=3, stride=2, padding=1),
@@ -54,7 +53,7 @@ class DCGAN_Discriminator(nn.Module):
 
 def unit_test():
     # Some sanity checks for the generator
-    test_dis = DCGAN_Discriminator(5, dim=128)
+    test_dis = DCGAN_discriminator(5, d=128)
 
     image = torch.rand((10,3,32,32))
     image = image.view(-1,3,32,32)

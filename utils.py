@@ -147,11 +147,11 @@ def exp_decay_loss(scores, constant, batchSize, windowSize, gpu_mode):
 
 # @yuchen unoptimized code below
 
-def grad_penalty(real_data, fake_data, penalty, discriminator, labels = None):
+def grad_penalty(real_data, fake_data, penalty, discriminator, update_index):
     alpha = torch.cuda.FloatTensor(fake_data.shape[0], 1, 1, 1).uniform_(0, 1).expand(fake_data.shape)
     interpolates = alpha * fake_data + (1 - alpha) * real_data
     interpolates = Variable(interpolates, requires_grad=True)
-    disc_interpolates = discriminator(interpolates, labels)
+    disc_interpolates = discriminator(interpolates, update_index)
 
     grad_out = torch.ones(disc_interpolates.size()).cuda()
     gradients = grad(outputs=disc_interpolates, inputs=interpolates,

@@ -1,0 +1,11 @@
+{   "edit_dim": 18,
+    "gen_dim": 256,
+    "dis_dim":128, 
+    "batch_size":64,
+    "epoch" : 351, 
+    "pretrain_iter":1,
+    "gp" :10, 
+    "ncritic" : 5, 
+    "lr" : 0.0001, 
+    "betas" : [0.5, 0.9] }
+

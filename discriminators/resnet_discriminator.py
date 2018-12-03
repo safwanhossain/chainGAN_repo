@@ -12,11 +12,11 @@ import utils
 
 # Class:
 
-class Resnet_Discriminator(nn.Module):
-    def __init__(self, editGenerators, d):
-        super(Resnet_Discriminator, self).__init__()
+class resnet_discriminator(nn.Module):
+    def __init__(self, edit_num, d):
+        super(resnet_discriminator, self).__init__()
         self.d = d
-        self.features = editGenerators + 1
+        self.features = edit_num + 1
         self.multiLastLayer = nn.ModuleList([])
         # ====== LAYERS ======
         self.optRes = nn.Sequential(

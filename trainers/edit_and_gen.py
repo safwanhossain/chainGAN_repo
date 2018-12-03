@@ -3,6 +3,9 @@
 
 import torch
 import torch.nn as nn
+import sys
+
+sys.path.append('../')
 from utils import normal_init
 
 class EditAndGen(nn.Module):

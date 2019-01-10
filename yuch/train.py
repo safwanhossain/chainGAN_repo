@@ -17,7 +17,6 @@ def main(
     noisesize=96,
     G_embedsize=32,
     D_embedsize=3,
-    perfect = 0
 ):
     ncritic = int(ncritic)
     uselabels = int(uselabels)
@@ -27,7 +26,6 @@ def main(
     noisesize = int(noisesize)
     G_embedsize = int(G_embedsize)
     D_embedsize = int(D_embedsize)
-    perfect = int(perfect)
     
     data = {
         "mnist": datasets.mnist,
@@ -71,7 +69,6 @@ def main(
         batch,
         ncritic,
         cycle = cycle,
-        perfect = perfect
     )
     
     net.train()

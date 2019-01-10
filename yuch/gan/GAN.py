@@ -206,7 +206,7 @@ class GAN:
         
         fake = self.D(Xh, Y, T).mean()
         self.F += fake.item()
-        D_loss = fake - real + self.grad_penalty(X, Xh, Y)
+        D_loss = fake - real + self.grad_penalty(X, Xh, Y, T)
         
         # Mislabelled data
         
@@ -252,14 +252,14 @@ class GAN:
         Z = torch.FloatTensor(N, self.noisesize).normal_(mean=0, std=1)
         return Z.to(self.device)
     
-    def grad_penalty(self, X, Xh, Y):
+    def grad_penalty(self, X, Xh, Y, T):
         N = len(X)
         V = X.device
         
         alpha = torch.FloatTensor(N, 1, 1, 1).uniform_(0, 1).to(V)
         intrp = alpha * Xh + (1 - alpha) * X
         intrp = torch.autograd.Variable(intrp, requires_grad=True)
-        score = self.D(intrp, Y)
+        score = self.D(intrp, Y, T)
         goutp = torch.ones(score.size()).to(V)
         grads = torch.autograd.grad(
             outputs = score,

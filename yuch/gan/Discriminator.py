@@ -22,10 +22,10 @@ class Discriminator(modules.Savable, modules.NormalInit):
                         torch.nn.Conv2d(insize, 128, 3, padding=1),
                         torch.nn.ReLU(),
                         
-                        torch.nn.Conv2d(128, 128, 3, padding=1, stride=2),
-                        torch.nn.ReLU(),
-                        
                         torch.nn.AvgPool2d(2),
+                        
+                        torch.nn.Conv2d(128, 128, 3, padding=1),
+                        torch.nn.ReLU(),
                     ),
                     shortcut = torch.nn.Sequential(
                         torch.nn.Conv2d(insize, 128, 1),
@@ -40,12 +40,15 @@ class Discriminator(modules.Savable, modules.NormalInit):
                         torch.nn.Conv2d(128, 128, 3, padding=1),
                         torch.nn.ReLU(),
                         
+                        torch.nn.AvgPool2d(2),
+                        
                         torch.nn.Conv2d(128, 128, 3, padding=1),
                         torch.nn.ReLU(),
-                        
+                    ),
+                    shortcut = torch.nn.Sequential(
+                        torch.nn.Conv2d(128, 128, 1),
                         torch.nn.AvgPool2d(2),
                     ),
-                    shortcut = torch.nn.AvgPool2d(2),
                     activation = torch.nn.ReLU()
                 ),
                 

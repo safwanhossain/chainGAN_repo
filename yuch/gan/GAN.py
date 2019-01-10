@@ -133,7 +133,8 @@ class GAN:
             for X, Y in self.validationset:
                 X = X.to(self.device)
                 Y = Y.to(self.device)
-                V += self.D(X, Y).mean().item()
+                T = random.randint(0, self.numeditors)
+                V += self.D(X, Y, T).mean().item()
                 N += 1.0
         V /= N
         T = self.R/self.N

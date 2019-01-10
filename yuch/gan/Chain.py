@@ -24,13 +24,13 @@ class Chain(modules.Savable):
         X = Z
         with torch.no_grad():
             for i in range(ed_i):
-                X = self.ed[i](X).detach()
-        return self.prep(self.ed[ed_i](X))
+                X = self.ed[i](X, Y).detach()
+        return self.prep(self.ed[ed_i](X, Y))
     
     def gather_allresults(self, Z, Y):
         out = []
         X = Z
         for ed in self.ed:
-            X = ed(X)
+            X = ed(X, Y)
             out.append(self.prep(X))
         return out

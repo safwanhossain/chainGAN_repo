@@ -56,7 +56,7 @@ class Editor(modules.Savable, modules.NormalInit):
     def get_init_targets(self):
         return [torch.nn.Conv2d]
     
-    def forward(self, X):
+    def forward(self, X, Y):
         return self.cnn(X)
     
     def unittest():

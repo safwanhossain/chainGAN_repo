@@ -121,9 +121,12 @@ class GAN:
                 self.G.save(self.G_file)
                 fnames = self.sample_images()
             
-                with self.service.create("%s - epoch %d" % (self.name, epoch)) as email:
-                    list(map(email.attach, fnames))
-                    email.write(self.report_validation_divergence())
+                try:
+                    with self.service.create("%s - epoch %d" % (self.name, epoch)) as email:
+                        list(map(email.attach, fnames))
+                        email.write(self.report_validation_divergence())
+                except:
+                    print("Error in sending email.")
     
     # === PRIVATE ===
     

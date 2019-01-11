@@ -12,7 +12,7 @@ from .Editor import Editor
 from .Chain import Chain
 
 USERNAME = "ychnlgy@gmail.com"
-MAIL_FREQ = 1
+MAIL_FREQ = 20
 
 class GAN:
 

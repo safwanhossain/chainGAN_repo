@@ -201,7 +201,8 @@ def save_image(data, label, directory):
     # Plot
     data = data.transpose((1,2,0))
     filename = directory + "/" + label + ".png"
-    matplotlib.image.imsave(filename, data)    
+    matplotlib.image.imsave(filename, data)
+    return filename
 
 def combine_image_and_onehot_label(data, label):
     id_matrix = numpy.identity(10)

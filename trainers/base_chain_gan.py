@@ -41,8 +41,7 @@ def generate_images(generator, directory_name, is_gpu=True, w_labels=False, epoc
                 filename = "Ep" + epoch + "_" + "sample%d"%j + "_edited%d"%i + "_label: " + str(labels[i])
             else:
                 filename = "Ep" + epoch + "_" + "sample%d"%j + "_edited%d"%i 
-            files.append(filename)
-            utils.save_image(image.cpu().detach().numpy(), filename, directory_name)
+            files.append(utils.save_image(image.cpu().detach().numpy(), filename, directory_name))
     return files
     
 class base_chain_gan(object):
@@ -189,7 +188,7 @@ class base_chain_gan(object):
             #        directory_name + "/d_scores", epoch) 
             #utils.compute_wass_distance(sample_images, self.D, self.G, directory_name + "/wass_distance", epoch)
             
-            if (epoch % 25)==0:
+            if (epoch % 25)==0 and epoch:
                 G_optimizers_dict = [g_optim.state_dict() for g_optim in self.G_optimizers]
                 save_dict = {'epoch' : epoch,
                              'Discriminator' : self.D.state_dict(),
@@ -197,6 +196,9 @@ class base_chain_gan(object):
                              'D_optimizers' : G_optimizers_dict }
                 file_name = self.directory_name + '/model_trained_' + str(epoch) + '.tar'
                 torch.save(save_dict, file_name)
-                with self.service.create("ChainGAN epoch %d" % epoch) as email:
-                    for f in files:
-                        email.attach(f)
+                try:
+                    with self.service.create("ChainGAN epoch %d" % epoch) as email:
+                        for f in files:
+                            email.attach(f)
+                except:
+                    print("Email failed to send.")

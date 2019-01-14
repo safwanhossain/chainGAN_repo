@@ -143,7 +143,7 @@ class GAN:
         T = self.R/self.N
         F = self.F/self.N
         R = abs(T-V)/abs(T-F)
-        return "Validation score: %.2f and divergence: %.2f" % (V, R)
+        return "Validation score: %.2f (%.2f real, %.2f fake) and divergence: %.2f" % (V, T, F, R)
     
     def sample_images(self):
         return list(self._sample_images())

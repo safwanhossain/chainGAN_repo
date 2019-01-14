@@ -21,18 +21,16 @@ class resnet_editor(nn.Module):
         self.d = d
         assert self.d > 0, "Resnet dimension must be greater than zero. Sorry!"
         assert self.d % 3 == 0, "Resnet dimension must be divisible by 3. Sorry!"
+        
         self.res_block_1_d = nn.Sequential(
-            nn.BatchNorm2d(3),
-            nn.ReLU(),
             nn.Conv2d(3, self.d, kernel_size=(3,3), padding=1),
             nn.BatchNorm2d(self.d),
             nn.ReLU(),
             nn.Conv2d(self.d, self.d, kernel_size=(3,3), padding=1)
         )
+        self.sc_1_d = torch.nn.Conv2d(3, self.d, 1)
 
         self.res_block_d_d = nn.Sequential(
-            nn.BatchNorm2d(self.d),
-            nn.ReLU(),
             nn.Conv2d(self.d, self.d, kernel_size=(3,3), padding=1),
             nn.BatchNorm2d(self.d),
             nn.ReLU(),
@@ -40,17 +38,14 @@ class resnet_editor(nn.Module):
         )
 
         self.res_block_d_d2 = nn.Sequential(
-            nn.BatchNorm2d(self.d),
-            nn.ReLU(),
             nn.Conv2d(self.d, self.d*2, kernel_size=(3,3), padding=1),
             nn.BatchNorm2d(self.d*2),
             nn.ReLU(),
             nn.Conv2d(self.d*2, self.d*2, kernel_size=(3,3), padding=1)
         )
+        self.sc_d_d2 = torch.nn.Conv2d(self.d, self.d*2, 1)
         
         self.res_block_d2_d2 = nn.Sequential(
-            nn.BatchNorm2d(self.d*2),
-            nn.ReLU(),
             nn.Conv2d(self.d*2, self.d*2, kernel_size=(3,3), padding=1),
             nn.BatchNorm2d(self.d*2),
             nn.ReLU(),
@@ -58,52 +53,23 @@ class resnet_editor(nn.Module):
         )
         
         self.res_block_d2_d = nn.Sequential(
-            nn.BatchNorm2d(self.d*2),
-            nn.ReLU(),
             nn.Conv2d(self.d*2, self.d, kernel_size=(3,3), padding=1),
             nn.BatchNorm2d(self.d),
             nn.ReLU(),
             nn.Conv2d(self.d, self.d, kernel_size=(3,3), padding=1)
         )
+        self.sc_d2_d = torch.nn.Conv2d(self.d*2, self.d, 1)
         
-        self.res_block_d_1 = nn.Sequential(
-            nn.BatchNorm2d(self.d),
-            nn.ReLU(),
-            nn.Conv2d(self.d, self.d, kernel_size=(3,3), padding=1),
-            nn.BatchNorm2d(self.d),
-            nn.ReLU(),
-            nn.Conv2d(self.d, 3, kernel_size=(3,3), padding=1)
-        )
-
-        self.relu = nn.Sequential(nn.ReLU())
-        self.c = nn.Parameter(torch.ones(1))
+        self.res_block_d_1 = nn.Conv2d(self.d, 3, kernel_size=(3,3), padding=1)
 
     def forward(self, image):
-        image = image.detach()
-        image = image.view(-1,3,32,32)
-        image_rd = image.repeat((1,self.d//3,1,1))
-        image_rd2 = image.repeat((1,2*self.d//3,1,1))
-        
-        x = self.res_block_1_d(image)
-        x = x + image_rd
-
-        x = self.res_block_d_d(x)
-        x = x + image_rd
-
-        x = self.res_block_d_d2(x)
-        x = x + image_rd2
-        
-        x = self.res_block_d2_d2(x)
-        x = x + image_rd2
-
-        x = self.res_block_d2_d(x)
-        x = x + image_rd
-
-        x = self.res_block_d_1(x)
-        #x = nn.functional.tanh(x)
-        x = self.c * image + x
-        
-        return x
+        x = image.detach()
+        x = torch.nn.functional.relu(self.res_block_1_d(x) + self.sc_1_d(x))
+        x = torch.nn.functional.relu(self.res_block_d_d(x) + x)
+        x = torch.nn.functional.relu(self.res_block_d_d2(x) + self.sc_d_d2(x))
+        x = torch.nn.functional.relu(self.res_block_d2_d2(x) + x)
+        x = torch.nn.functional.relu(self.res_block_d2_d(x) + self.sc_d2_d(x))
+        return self.res_block_d_1(x)
 
 def unit_test():
     test_gen = resnet_editor(102)

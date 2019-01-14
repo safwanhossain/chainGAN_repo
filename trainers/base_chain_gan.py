@@ -188,7 +188,7 @@ class base_chain_gan(object):
             #        directory_name + "/d_scores", epoch) 
             #utils.compute_wass_distance(sample_images, self.D, self.G, directory_name + "/wass_distance", epoch)
             
-            if (epoch % 25)==0 and epoch:
+            if (epoch % 25)==0:
                 G_optimizers_dict = [g_optim.state_dict() for g_optim in self.G_optimizers]
                 save_dict = {'epoch' : epoch,
                              'Discriminator' : self.D.state_dict(),

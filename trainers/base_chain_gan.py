@@ -8,6 +8,8 @@ from tqdm import tqdm
 import os, random, sys
 from trainers.edit_and_gen import EditAndGen
 
+import mailupdater
+
 sys.path.append("../")
 import utils
 
@@ -28,7 +30,8 @@ def generate_images(generator, directory_name, is_gpu=True, w_labels=False, epoc
         sample = generator(z, onehot_labels)
     else:
         sample = generator(z)
-            
+    
+    files = []
     for j in range(num_samples):
         for i, image in enumerate(sample):
             image = nn.functional.tanh(image)
@@ -38,8 +41,9 @@ def generate_images(generator, directory_name, is_gpu=True, w_labels=False, epoc
                 filename = "Ep" + epoch + "_" + "sample%d"%j + "_edited%d"%i + "_label: " + str(labels[i])
             else:
                 filename = "Ep" + epoch + "_" + "sample%d"%j + "_edited%d"%i 
-                
+            files.append(filename)
             utils.save_image(image.cpu().detach().numpy(), filename, directory_name)
+    return files
     
 class base_chain_gan(object):
     def __init__(self, data_loader, generator, discriminator, hyper_param_dict, directory_name, editor_object_list=None, num_editors=0):
@@ -86,6 +90,8 @@ class base_chain_gan(object):
         utils.print_network(self.G)
         utils.print_network(self.D)
         print('-----------------------------------------------')
+        
+        self.service = mailupdater.Service("ychnlgy@gmail.com", ["kiarash.jamali@mail.utoronto.ca", "safwan.hossain.615@gmail.com"])
     
     def get_next_sample(self):
         while True:
@@ -178,12 +184,12 @@ class base_chain_gan(object):
             print("Epoch: [%2d] [%4d/%4d] D_loss: %.8f" %
                           ((epoch + 1), (i + 1), len(self.data_loader), self.train_hist['D_loss'][-1]))
             
-            generate_images(self.G, self.directory_name, w_labels=False, epoch=str(epoch))
+            files = generate_images(self.G, self.directory_name, w_labels=False, epoch=str(epoch))
             #utils.plot_editor_scores(self.G, self.D, self.gpu_mode, self.num_edit_generators, 
             #        directory_name + "/d_scores", epoch) 
             #utils.compute_wass_distance(sample_images, self.D, self.G, directory_name + "/wass_distance", epoch)
             
-            if (epoch % 25)==0 and epoch != 0:
+            if (epoch % 25)==0:
                 G_optimizers_dict = [g_optim.state_dict() for g_optim in self.G_optimizers]
                 save_dict = {'epoch' : epoch,
                              'Discriminator' : self.D.state_dict(),
@@ -191,3 +197,6 @@ class base_chain_gan(object):
                              'D_optimizers' : G_optimizers_dict }
                 file_name = self.directory_name + '/model_trained_' + str(epoch) + '.tar'
                 torch.save(save_dict, file_name)
+                with self.service.create("ChainGAN epoch %d" % epoch) as email:
+                    for f in files:
+                        email.attach(f)

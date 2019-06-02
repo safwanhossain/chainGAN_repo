@@ -19,9 +19,9 @@ class ResBlockDown(nn.Module):
     def forward(self, x):
         return self.main_module(x) + self.skip(x)
 
-class BigGANDiscriminator(nn.Module):
+class biggan_discriminator(nn.Module):
     def __init__(self,channel_list,editor_num,begin_pic_dim=28,rgb=False):
-        super(BigGANDiscriminator,self).__init__()
+        super(biggan_discriminator,self).__init__()
         block_list = [ResBlockDown(in_channel, out_channel, scale) for in_channel, out_channel, scale in channel_list]
         self.blocks = nn.Sequential(*block_list)
         end_dim = begin_pic_dim

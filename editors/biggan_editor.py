@@ -33,9 +33,9 @@ class ResBlock(nn.Module):
     def forward(self, x):
         return self.main_module(x) + self.skip(x)
 
-class BigGANEditor(nn.Module):
+class biggan_editor(nn.Module):
     def __init__(self,channel_list,rgb=False):
-        super(BigGANEditor,self).__init__()
+        super(biggan_editor,self).__init__()
         block_list = [ResBlock(in_channel, out_channel) for in_channel, out_channel in channel_list]
         self.blocks = nn.Sequential(*block_list)
         self.critic_gate = CriticGate(rgb)

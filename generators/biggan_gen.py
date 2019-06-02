@@ -35,9 +35,9 @@ class ResBlockUp(nn.Module):
     def forward(self, x):
         return self.main_module(x) + self.skip(x)
 
-class BigGAN(nn.Module):
+class biggan_gen(nn.Module):
     def __init__(self,channel_list,end_pic_dim=28,z_dim=128,rgb=False):
-        super(BigGAN,self).__init__()
+        super(biggan_gen,self).__init__()
         block_list = [ResBlockUp(in_channel, out_channel, scale) for in_channel, out_channel, scale in channel_list]
         self.blocks = nn.Sequential(*block_list)
         begin_dim = end_pic_dim

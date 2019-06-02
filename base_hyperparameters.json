@@ -1,6 +1,6 @@
-{   "generator_name" : "resnet_generator",
-    "discriminator_name" : "resnet_discriminator",
-    "editor_name" : "resnet_editor",
+{   "generator_name" : "biggan_gen",
+    "discriminator_name" : "biggan_discriminator",
+    "editor_name" : "biggan_editor",
     "trainer_name" : "base_chain_gan",
     
     "num_editors" :5,   
@@ -13,6 +13,14 @@
     "gp" :10, 
     "ncritic" : 5, 
     "lr" : 0.0001, 
-    "betas" : [0.5, 0.9] 
+    "betas" : [0.5, 0.9],
+    
+    "is_biggan" : true,
+    "dis_list" : [(3,100,2),(100,50,2),(50,20,2)],
+    "editor_list" : [(3,100),(100,100),(100,50),(50,3)],
+    "gen_list" : [(5,100,2),(100,100,2),(100,3,2)],
+    "pic_dim" : 32,
+    "rgb" : true
+
 }
 

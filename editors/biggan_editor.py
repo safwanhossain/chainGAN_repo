@@ -47,5 +47,6 @@ class biggan_editor(nn.Module):
     def forward(self,x):
         x_prime = self.blocks(x)
         critic_val = self.critic_gate(x_prime)
+        critic_val = critic_val.view(-1,1,1,1)
         out = critic_val * x_prime + (1 - critic_val) * x
         return out

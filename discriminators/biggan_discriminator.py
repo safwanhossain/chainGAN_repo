@@ -29,7 +29,7 @@ class biggan_discriminator(nn.Module):
             end_dim /= scale
         assert(int(end_dim)==end_dim)
         self.shape = channel_list[-1][1]*int(end_dim)*int(end_dim)
-        self.fc_list = nn.ModuleList([nn.Linear(self.shape,1) for i in range(editor_num)])
+        self.fc_list = nn.ModuleList([nn.Linear(self.shape,1) for i in range(editor_num+1)])
         
         # Initialization
         for p in self.parameters():

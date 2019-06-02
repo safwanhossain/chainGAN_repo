@@ -30,11 +30,16 @@ if __name__ == "__main__":
     discriminator_mod = getattr(discriminator_file, discriminator_name)
     trainer_mod = getattr(trainer_file, trainer_name)
 
-    generator = generator_mod(d=hyper_param_dict['gen_dim'])
-    editor_list = [editor_mod(d=hyper_param_dict['edit_dim']) \
-            for i in range(hyper_param_dict["num_editors"])]
-    discriminator = discriminator_mod(edit_num=hyper_param_dict["num_editors"], d=hyper_param_dict['dis_dim'])
-    
+    if not hyper_param_dict['is_biggan']:
+        generator = generator_mod(d=hyper_param_dict['gen_dim'])
+        editor_list = [editor_mod(d=hyper_param_dict['edit_dim']) \
+                for i in range(hyper_param_dict["num_editors"])]
+        discriminator = discriminator_mod(edit_num=hyper_param_dict["num_editors"], d=hyper_param_dict['dis_dim'])
+    else:
+        generator = generator_mod(hyper_param_dict['gen_list'],hyper_param_dict['pic_dim'],hyper_param_dict['rgb'])
+        editor_list = [editor_mod(hyper_param_dict['editor_list'],hyper_param_dict['pic_dim'],hyper_param_dict['rgb']) \
+                for i in range(hyper_param_dict["num_editors"])]
+        discriminator = discriminator_mod(hyper_param_dict['dis_list'],hyper_param_dict["num_editors"],hyper_param_dict['pic_dim'],hyper_param_dict['rgb'])
     train_data, train_labels = utils.get_data()
     my_dataset = utils.create_dataset(train_data, train_labels, int(hyper_param_dict['batch_size'])) 
     GAN = trainer_mod(my_dataset, generator, discriminator, hyper_param_dict, config.save_dir, \

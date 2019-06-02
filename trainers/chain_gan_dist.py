@@ -11,6 +11,8 @@ from trainers.edit_and_gen import EditAndGen
 sys.path.append("../")
 import utils
 
+# Not complete, need to learn how to parallelize this efficiently so that each GPU only updates one module
+
 def generate_images(generator, directory_name, is_gpu=True, w_labels=False, epoch='na'):
     num_samples = 8
 
@@ -31,7 +33,7 @@ def generate_images(generator, directory_name, is_gpu=True, w_labels=False, epoc
             
     for j in range(num_samples):
         for i, image in enumerate(sample):
-            image = nn.functional.tanh(image)
+            image = torch.tanh(image)
             image = image[j].view(3,32,32).mul(0.5).add(0.5)
             filename = "def"
             if w_labels:
@@ -44,6 +46,7 @@ def generate_images(generator, directory_name, is_gpu=True, w_labels=False, epoc
 class base_chain_gan(object):
     def __init__(self, data_loader, generator, discriminator, hyper_param_dict, directory_name, editor_object_list=None, num_editors=0):
         # parameters
+        torch.distributed.init_process_group(backend="nccl")
         self.epoch = hyper_param_dict['epoch']
         self.batch_size = hyper_param_dict['batch_size']
         self.pretrain_iter = hyper_param_dict['pretrain_iter']
@@ -68,22 +71,19 @@ class base_chain_gan(object):
         self.data_sampler = self.get_next_sample()
 
         # Generators
-        self.G = EditAndGen(generator, editor_object_list, self.num_edit_generators)
+        self.G = nn.DistributedDataParallel(EditAndGen(generator, editor_object_list, self.num_edit_generators))
         if not self.is_biggan:
             self.G.weight_init(mean=0.0, std=0.02)
         self.G_optimizers = []
         for optimizer in range(self.num_edit_generators + 1):
-            self.G_optimizers.append(optim.Adam(self.G.param_groups[optimizer], lr=self.lr, betas=self.betas))
-        if self.gpu_mode:
-            self.G.cuda()
+            self.G_optimizers.append(optim.Adam(self.G.module.param_groups[optimizer], lr=self.lr, betas=self.betas))
         
         # Discriminators
-        self.D = discriminator
+        self.D = nn.DistributedDataParallel(discriminator)
         if not self.is_biggan:
             self.D.weight_init(mean=0.0, std=0.02)
-        self.D_optimizer = optim.Adam(self.D.parameters(), lr=self.lr, betas=self.betas)
-        if self.gpu_mode:
-            self.D.cuda()
+        self.D_optimizer = optim.Adam(self.D.module.parameters(), lr=self.lr, betas=self.betas)
+
         
         print('---------- Networks architecture -------------')
         utils.print_network(self.G)
@@ -122,8 +122,8 @@ class base_chain_gan(object):
             return lossval
         
         def train_discriminator(update_index):
-            self.D.train()
-            self.G.eval()
+            self.D.module.train()
+            self.G.module.eval()
            
             for _ in range(self.ncritic):
                 z = torch.randn(self.batch_size, 128)
@@ -148,8 +148,8 @@ class base_chain_gan(object):
             return images 
 
         def train_generators(update_index):
-            self.G.train()
-            self.D.eval()
+            self.G.module.train()
+            self.D.module.eval()
             
             z = torch.randn(self.batch_size, 128)
             z = process_variables([z])[0]
@@ -189,8 +189,8 @@ class base_chain_gan(object):
             if (epoch % 25)==0 and epoch != 0:
                 G_optimizers_dict = [g_optim.state_dict() for g_optim in self.G_optimizers]
                 save_dict = {'epoch' : epoch,
-                             'Discriminator' : self.D.state_dict(),
-                             'Generators' : self.G.state_dict(),
+                             'Discriminator' : self.D.module.state_dict(),
+                             'Generators' : self.G.module.state_dict(),
                              'D_optimizers' : G_optimizers_dict }
                 file_name = self.directory_name + '/model_trained_' + str(epoch) + '.tar'
                 torch.save(save_dict, file_name)

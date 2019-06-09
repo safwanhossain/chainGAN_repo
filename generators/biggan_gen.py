@@ -45,7 +45,12 @@ class biggan_gen(nn.Module):
             begin_dim /= scale
         assert(int(begin_dim)==begin_dim)
         self.shape = (channel_list[0][0],int(begin_dim),int(begin_dim))
-        self.fc = nn.Linear(z_dim,self.shape[0]*self.shape[1]*self.shape[2])
+        
+        self.fc = nn.Sequential(
+            nn.Linear(z_dim,self.shape[0]*self.shape[1]*self.shape[2]),
+            nn.BatchNorm1d(self.shape[0]*self.shape[1]*self.shape[2]),
+            nn.ReLU()
+        )
         
         # Initialization
         for p in self.parameters():

@@ -155,7 +155,7 @@ class base_chain_gan(object):
             z = process_variables([z])[0]
             
             gen_image = self.G.generate_upto(z, update_index+1)
-            gen_image = nn.functional.tanh(gen_image)
+            gen_image = torch.tanh(gen_image)
             loss = -self.D(gen_image, update_index).mean()
             genLoss = backDifferentiate(loss, self.G_optimizers[update_index])
 

@@ -1,0 +1,812 @@
+Files already downloaded and verified
+---------- Networks architecture -------------
+EditAndGen(
+  (mods): ModuleList(
+    (0): biggan_gen(
+      (blocks): Sequential(
+        (0): ResBlockUp(
+          (main_module): Sequential(
+            (0): BatchNorm2d(5, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): ReLU()
+            (2): Upsample(scale_factor=2.0, mode=nearest)
+            (3): Conv2d(5, 50, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (4): BatchNorm2d(50, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (5): ReLU()
+            (6): Conv2d(50, 100, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (skip): Sequential(
+            (0): Upsample(scale_factor=2.0, mode=nearest)
+            (1): Conv2d(5, 100, kernel_size=(1, 1), stride=(1, 1))
+          )
+        )
+        (1): ResBlockUp(
+          (main_module): Sequential(
+            (0): BatchNorm2d(100, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): ReLU()
+            (2): Upsample(scale_factor=2.0, mode=nearest)
+            (3): Conv2d(100, 50, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (4): BatchNorm2d(50, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (5): ReLU()
+            (6): Conv2d(50, 100, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (skip): Sequential(
+            (0): Upsample(scale_factor=2.0, mode=nearest)
+            (1): Conv2d(100, 100, kernel_size=(1, 1), stride=(1, 1))
+          )
+        )
+        (2): ResBlockUp(
+          (main_module): Sequential(
+            (0): BatchNorm2d(100, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): ReLU()
+            (2): Upsample(scale_factor=2.0, mode=nearest)
+            (3): Conv2d(100, 1, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (4): BatchNorm2d(1, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (5): ReLU()
+            (6): Conv2d(1, 3, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (skip): Sequential(
+            (0): Upsample(scale_factor=2.0, mode=nearest)
+            (1): Conv2d(100, 3, kernel_size=(1, 1), stride=(1, 1))
+          )
+        )
+      )
+      (fc): Linear(in_features=128, out_features=80, bias=True)
+    )
+    (1): biggan_editor(
+      (blocks): Sequential(
+        (0): ResBlock(
+          (main_module): Sequential(
+            (0): BatchNorm2d(3, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): ReLU()
+            (2): Conv2d(3, 50, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (3): BatchNorm2d(50, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (4): ReLU()
+            (5): Conv2d(50, 100, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (skip): Sequential(
+            (0): Conv2d(3, 100, kernel_size=(1, 1), stride=(1, 1))
+          )
+        )
+        (1): ResBlock(
+          (main_module): Sequential(
+            (0): BatchNorm2d(100, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): ReLU()
+            (2): Conv2d(100, 50, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (3): BatchNorm2d(50, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (4): ReLU()
+            (5): Conv2d(50, 100, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (skip): Sequential(
+            (0): Conv2d(100, 100, kernel_size=(1, 1), stride=(1, 1))
+          )
+        )
+        (2): ResBlock(
+          (main_module): Sequential(
+            (0): BatchNorm2d(100, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): ReLU()
+            (2): Conv2d(100, 25, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (3): BatchNorm2d(25, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (4): ReLU()
+            (5): Conv2d(25, 50, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (skip): Sequential(
+            (0): Conv2d(100, 50, kernel_size=(1, 1), stride=(1, 1))
+          )
+        )
+        (3): ResBlock(
+          (main_module): Sequential(
+            (0): BatchNorm2d(50, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): ReLU()
+            (2): Conv2d(50, 1, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (3): BatchNorm2d(1, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (4): ReLU()
+            (5): Conv2d(1, 3, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (skip): Sequential(
+            (0): Conv2d(50, 3, kernel_size=(1, 1), stride=(1, 1))
+          )
+        )
+      )
+      (critic_gate): CriticGate(
+        (gate_calc): Sequential(
+          (0): Conv2d(3, 1, kernel_size=(10, 10), stride=(1, 1))
+          (1): Sigmoid()
+        )
+      )
+    )
+    (2): biggan_editor(
+      (blocks): Sequential(
+        (0): ResBlock(
+          (main_module): Sequential(
+            (0): BatchNorm2d(3, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): ReLU()
+            (2): Conv2d(3, 50, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (3): BatchNorm2d(50, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (4): ReLU()
+            (5): Conv2d(50, 100, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (skip): Sequential(
+            (0): Conv2d(3, 100, kernel_size=(1, 1), stride=(1, 1))
+          )
+        )
+        (1): ResBlock(
+          (main_module): Sequential(
+            (0): BatchNorm2d(100, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): ReLU()
+            (2): Conv2d(100, 50, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (3): BatchNorm2d(50, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (4): ReLU()
+            (5): Conv2d(50, 100, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (skip): Sequential(
+            (0): Conv2d(100, 100, kernel_size=(1, 1), stride=(1, 1))
+          )
+        )
+        (2): ResBlock(
+          (main_module): Sequential(
+            (0): BatchNorm2d(100, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): ReLU()
+            (2): Conv2d(100, 25, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (3): BatchNorm2d(25, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (4): ReLU()
+            (5): Conv2d(25, 50, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (skip): Sequential(
+            (0): Conv2d(100, 50, kernel_size=(1, 1), stride=(1, 1))
+          )
+        )
+        (3): ResBlock(
+          (main_module): Sequential(
+            (0): BatchNorm2d(50, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): ReLU()
+            (2): Conv2d(50, 1, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (3): BatchNorm2d(1, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (4): ReLU()
+            (5): Conv2d(1, 3, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (skip): Sequential(
+            (0): Conv2d(50, 3, kernel_size=(1, 1), stride=(1, 1))
+          )
+        )
+      )
+      (critic_gate): CriticGate(
+        (gate_calc): Sequential(
+          (0): Conv2d(3, 1, kernel_size=(10, 10), stride=(1, 1))
+          (1): Sigmoid()
+        )
+      )
+    )
+    (3): biggan_editor(
+      (blocks): Sequential(
+        (0): ResBlock(
+          (main_module): Sequential(
+            (0): BatchNorm2d(3, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): ReLU()
+            (2): Conv2d(3, 50, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (3): BatchNorm2d(50, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (4): ReLU()
+            (5): Conv2d(50, 100, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (skip): Sequential(
+            (0): Conv2d(3, 100, kernel_size=(1, 1), stride=(1, 1))
+          )
+        )
+        (1): ResBlock(
+          (main_module): Sequential(
+            (0): BatchNorm2d(100, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): ReLU()
+            (2): Conv2d(100, 50, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (3): BatchNorm2d(50, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (4): ReLU()
+            (5): Conv2d(50, 100, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (skip): Sequential(
+            (0): Conv2d(100, 100, kernel_size=(1, 1), stride=(1, 1))
+          )
+        )
+        (2): ResBlock(
+          (main_module): Sequential(
+            (0): BatchNorm2d(100, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): ReLU()
+            (2): Conv2d(100, 25, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (3): BatchNorm2d(25, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (4): ReLU()
+            (5): Conv2d(25, 50, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (skip): Sequential(
+            (0): Conv2d(100, 50, kernel_size=(1, 1), stride=(1, 1))
+          )
+        )
+        (3): ResBlock(
+          (main_module): Sequential(
+            (0): BatchNorm2d(50, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): ReLU()
+            (2): Conv2d(50, 1, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (3): BatchNorm2d(1, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (4): ReLU()
+            (5): Conv2d(1, 3, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (skip): Sequential(
+            (0): Conv2d(50, 3, kernel_size=(1, 1), stride=(1, 1))
+          )
+        )
+      )
+      (critic_gate): CriticGate(
+        (gate_calc): Sequential(
+          (0): Conv2d(3, 1, kernel_size=(10, 10), stride=(1, 1))
+          (1): Sigmoid()
+        )
+      )
+    )
+    (4): biggan_editor(
+      (blocks): Sequential(
+        (0): ResBlock(
+          (main_module): Sequential(
+            (0): BatchNorm2d(3, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): ReLU()
+            (2): Conv2d(3, 50, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (3): BatchNorm2d(50, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (4): ReLU()
+            (5): Conv2d(50, 100, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (skip): Sequential(
+            (0): Conv2d(3, 100, kernel_size=(1, 1), stride=(1, 1))
+          )
+        )
+        (1): ResBlock(
+          (main_module): Sequential(
+            (0): BatchNorm2d(100, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): ReLU()
+            (2): Conv2d(100, 50, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (3): BatchNorm2d(50, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (4): ReLU()
+            (5): Conv2d(50, 100, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (skip): Sequential(
+            (0): Conv2d(100, 100, kernel_size=(1, 1), stride=(1, 1))
+          )
+        )
+        (2): ResBlock(
+          (main_module): Sequential(
+            (0): BatchNorm2d(100, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): ReLU()
+            (2): Conv2d(100, 25, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (3): BatchNorm2d(25, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (4): ReLU()
+            (5): Conv2d(25, 50, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (skip): Sequential(
+            (0): Conv2d(100, 50, kernel_size=(1, 1), stride=(1, 1))
+          )
+        )
+        (3): ResBlock(
+          (main_module): Sequential(
+            (0): BatchNorm2d(50, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): ReLU()
+            (2): Conv2d(50, 1, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (3): BatchNorm2d(1, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (4): ReLU()
+            (5): Conv2d(1, 3, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (skip): Sequential(
+            (0): Conv2d(50, 3, kernel_size=(1, 1), stride=(1, 1))
+          )
+        )
+      )
+      (critic_gate): CriticGate(
+        (gate_calc): Sequential(
+          (0): Conv2d(3, 1, kernel_size=(10, 10), stride=(1, 1))
+          (1): Sigmoid()
+        )
+      )
+    )
+    (5): biggan_editor(
+      (blocks): Sequential(
+        (0): ResBlock(
+          (main_module): Sequential(
+            (0): BatchNorm2d(3, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): ReLU()
+            (2): Conv2d(3, 50, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (3): BatchNorm2d(50, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (4): ReLU()
+            (5): Conv2d(50, 100, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (skip): Sequential(
+            (0): Conv2d(3, 100, kernel_size=(1, 1), stride=(1, 1))
+          )
+        )
+        (1): ResBlock(
+          (main_module): Sequential(
+            (0): BatchNorm2d(100, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): ReLU()
+            (2): Conv2d(100, 50, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (3): BatchNorm2d(50, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (4): ReLU()
+            (5): Conv2d(50, 100, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (skip): Sequential(
+            (0): Conv2d(100, 100, kernel_size=(1, 1), stride=(1, 1))
+          )
+        )
+        (2): ResBlock(
+          (main_module): Sequential(
+            (0): BatchNorm2d(100, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): ReLU()
+            (2): Conv2d(100, 25, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (3): BatchNorm2d(25, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (4): ReLU()
+            (5): Conv2d(25, 50, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (skip): Sequential(
+            (0): Conv2d(100, 50, kernel_size=(1, 1), stride=(1, 1))
+          )
+        )
+        (3): ResBlock(
+          (main_module): Sequential(
+            (0): BatchNorm2d(50, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (1): ReLU()
+            (2): Conv2d(50, 1, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+            (3): BatchNorm2d(1, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+            (4): ReLU()
+            (5): Conv2d(1, 3, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+          )
+          (skip): Sequential(
+            (0): Conv2d(50, 3, kernel_size=(1, 1), stride=(1, 1))
+          )
+        )
+      )
+      (critic_gate): CriticGate(
+        (gate_calc): Sequential(
+          (0): Conv2d(3, 1, kernel_size=(10, 10), stride=(1, 1))
+          (1): Sigmoid()
+        )
+      )
+    )
+  )
+)
+Total number of parameters: 1099006
+biggan_discriminator(
+  (blocks): Sequential(
+    (0): ResBlockDown(
+      (main_module): Sequential(
+        (0): BatchNorm2d(3, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (1): ReLU()
+        (2): Conv2d(3, 250, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+        (3): BatchNorm2d(250, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (4): ReLU()
+        (5): Conv2d(250, 500, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (skip): Sequential(
+        (0): Conv2d(3, 500, kernel_size=(1, 1), stride=(2, 2))
+      )
+    )
+    (1): ResBlockDown(
+      (main_module): Sequential(
+        (0): BatchNorm2d(500, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (1): ReLU()
+        (2): Conv2d(500, 250, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1))
+        (3): BatchNorm2d(250, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (4): ReLU()
+        (5): Conv2d(250, 500, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (skip): Sequential(
+        (0): Conv2d(500, 500, kernel_size=(1, 1), stride=(2, 2))
+      )
+    )
+    (2): ResBlockDown(
+      (main_module): Sequential(
+        (0): BatchNorm2d(500, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (1): ReLU()
+        (2): Conv2d(500, 100, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (3): BatchNorm2d(100, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (4): ReLU()
+        (5): Conv2d(100, 200, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (skip): Sequential(
+        (0): Conv2d(500, 200, kernel_size=(1, 1), stride=(1, 1))
+      )
+    )
+    (3): ResBlockDown(
+      (main_module): Sequential(
+        (0): BatchNorm2d(200, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (1): ReLU()
+        (2): Conv2d(200, 50, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (3): BatchNorm2d(50, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (4): ReLU()
+        (5): Conv2d(50, 100, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (skip): Sequential(
+        (0): Conv2d(200, 100, kernel_size=(1, 1), stride=(1, 1))
+      )
+    )
+    (4): ResBlockDown(
+      (main_module): Sequential(
+        (0): BatchNorm2d(100, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (1): ReLU()
+        (2): Conv2d(100, 25, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (3): BatchNorm2d(25, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (4): ReLU()
+        (5): Conv2d(25, 50, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (skip): Sequential(
+        (0): Conv2d(100, 50, kernel_size=(1, 1), stride=(1, 1))
+      )
+    )
+    (5): ResBlockDown(
+      (main_module): Sequential(
+        (0): BatchNorm2d(50, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (1): ReLU()
+        (2): Conv2d(50, 5, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+        (3): BatchNorm2d(5, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+        (4): ReLU()
+        (5): Conv2d(5, 10, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1))
+      )
+      (skip): Sequential(
+        (0): Conv2d(50, 10, kernel_size=(1, 1), stride=(1, 1))
+      )
+    )
+  )
+  (fc_list): ModuleList(
+    (0): Linear(in_features=640, out_features=1, bias=True)
+    (1): Linear(in_features=640, out_features=1, bias=True)
+    (2): Linear(in_features=640, out_features=1, bias=True)
+    (3): Linear(in_features=640, out_features=1, bias=True)
+    (4): Linear(in_features=640, out_features=1, bias=True)
+    (5): Linear(in_features=640, out_features=1, bias=True)
+  )
+)
+Total number of parameters: 4571512
+-----------------------------------------------
+Start pre-train
+End pre-train
+Epoch: [ 1] [ 781/ 781] D_loss: -24824016.00000000
+Epoch: [ 2] [ 781/ 781] D_loss: -116753496.00000000
+Epoch: [ 3] [ 781/ 781] D_loss: -265361952.00000000
+Epoch: [ 4] [ 781/ 781] D_loss: -574031744.00000000
+Epoch: [ 5] [ 781/ 781] D_loss: -1026712384.00000000
+Epoch: [ 6] [ 781/ 781] D_loss: 477734944.00000000
+Epoch: [ 7] [ 781/ 781] D_loss: 142772191232.00000000
+Epoch: [ 8] [ 781/ 781] D_loss: -1623920384.00000000
+Epoch: [ 9] [ 781/ 781] D_loss: -2305169664.00000000
+Epoch: [10] [ 781/ 781] D_loss: -4174505984.00000000
+Epoch: [11] [ 781/ 781] D_loss: -3875117824.00000000
+Epoch: [12] [ 781/ 781] D_loss: -3254079488.00000000
+Epoch: [13] [ 781/ 781] D_loss: -6694638592.00000000
+Epoch: [14] [ 781/ 781] D_loss: -7264062976.00000000
+Epoch: [15] [ 781/ 781] D_loss: 1178949632.00000000
+Epoch: [16] [ 781/ 781] D_loss: -1320305664.00000000
+Epoch: [17] [ 781/ 781] D_loss: -2919410688.00000000
+Epoch: [18] [ 781/ 781] D_loss: -36098293760.00000000
+Epoch: [19] [ 781/ 781] D_loss: 4529426432.00000000
+Epoch: [20] [ 781/ 781] D_loss: 7441028096.00000000
+Epoch: [21] [ 781/ 781] D_loss: -16351542272.00000000
+Epoch: [22] [ 781/ 781] D_loss: -30349727744.00000000
+Epoch: [23] [ 781/ 781] D_loss: -12203036672.00000000
+Epoch: [24] [ 781/ 781] D_loss: -52330045440.00000000
+Epoch: [25] [ 781/ 781] D_loss: 30128664576.00000000
+Epoch: [26] [ 781/ 781] D_loss: 1248143867904.00000000
+Epoch: [27] [ 781/ 781] D_loss: 1092071129088.00000000
+Epoch: [28] [ 781/ 781] D_loss: -8103985152.00000000
+Epoch: [29] [ 781/ 781] D_loss: -96953991168.00000000
+Epoch: [30] [ 781/ 781] D_loss: 219269758976.00000000
+Epoch: [31] [ 781/ 781] D_loss: 37765709824.00000000
+Epoch: [32] [ 781/ 781] D_loss: -29304721408.00000000
+Epoch: [33] [ 781/ 781] D_loss: -53261516800.00000000
+Epoch: [34] [ 781/ 781] D_loss: -16189878272.00000000
+Epoch: [35] [ 781/ 781] D_loss: 282136510464.00000000
+Epoch: [36] [ 781/ 781] D_loss: -221042311168.00000000
+Epoch: [37] [ 781/ 781] D_loss: 154039156736.00000000
+Epoch: [38] [ 781/ 781] D_loss: 2054955073536.00000000
+Epoch: [39] [ 781/ 781] D_loss: -93835952128.00000000
+Epoch: [40] [ 781/ 781] D_loss: -47080787968.00000000
+Epoch: [41] [ 781/ 781] D_loss: -214293348352.00000000
+Epoch: [42] [ 781/ 781] D_loss: -45005373440.00000000
+Epoch: [43] [ 781/ 781] D_loss: -195618635776.00000000
+Epoch: [44] [ 781/ 781] D_loss: -434061148160.00000000
+Epoch: [45] [ 781/ 781] D_loss: -690775195648.00000000
+Epoch: [46] [ 781/ 781] D_loss: 201180076572672.00000000
+Epoch: [47] [ 781/ 781] D_loss: 379222795223040.00000000
+Epoch: [48] [ 781/ 781] D_loss: -2943799001088.00000000
+Epoch: [49] [ 781/ 781] D_loss: -2128288284672.00000000
+Epoch: [50] [ 781/ 781] D_loss: -11107041280.00000000
+Epoch: [51] [ 781/ 781] D_loss: -4778790748160.00000000
+Epoch: [52] [ 781/ 781] D_loss: -8764152872960.00000000
+Epoch: [53] [ 781/ 781] D_loss: 9929145123340288.00000000
+Epoch: [54] [ 781/ 781] D_loss: 2181146983190757376.00000000
+Epoch: [55] [ 781/ 781] D_loss: 5908918973935648768.00000000
+Epoch: [56] [ 781/ 781] D_loss: 262531095738712064.00000000
+Epoch: [57] [ 781/ 781] D_loss: 8180710108037120.00000000
+Epoch: [58] [ 781/ 781] D_loss: 5791955598442496.00000000
+Epoch: [59] [ 781/ 781] D_loss: 9653065699295232.00000000
+Epoch: [60] [ 781/ 781] D_loss: 1633404248391680.00000000
+Epoch: [61] [ 781/ 781] D_loss: 50991659919343616.00000000
+Epoch: [62] [ 781/ 781] D_loss: 2275490316419072.00000000
+Epoch: [63] [ 781/ 781] D_loss: 2884134426902528.00000000
+Epoch: [64] [ 781/ 781] D_loss: 3646542929985536.00000000
+Epoch: [65] [ 781/ 781] D_loss: 97464928343949312.00000000
+Epoch: [66] [ 781/ 781] D_loss: 2395805503717376.00000000
+Epoch: [67] [ 781/ 781] D_loss: 2027754321084416.00000000
+Epoch: [68] [ 781/ 781] D_loss: 4658091748491264.00000000
+Epoch: [69] [ 781/ 781] D_loss: 28515353030033408.00000000
+Epoch: [70] [ 781/ 781] D_loss: 483179626496000.00000000
+Epoch: [71] [ 781/ 781] D_loss: 265266424446976.00000000
+Epoch: [72] [ 781/ 781] D_loss: 391542996958445568.00000000
+Epoch: [73] [ 781/ 781] D_loss: 555754641686528.00000000
+Epoch: [74] [ 781/ 781] D_loss: 1161306677706752.00000000
+Epoch: [75] [ 781/ 781] D_loss: 622267344093184.00000000
+Epoch: [76] [ 781/ 781] D_loss: 70011280424960.00000000
+Epoch: [77] [ 781/ 781] D_loss: 182704469442560.00000000
+Epoch: [78] [ 781/ 781] D_loss: 21757568221184.00000000
+Epoch: [79] [ 781/ 781] D_loss: 456876978339840.00000000
+Epoch: [80] [ 781/ 781] D_loss: 63764063728959488.00000000
+Epoch: [81] [ 781/ 781] D_loss: 56368117160345600.00000000
+Epoch: [82] [ 781/ 781] D_loss: 444471971938304.00000000
+Epoch: [83] [ 781/ 781] D_loss: 238893580419072.00000000
+Epoch: [84] [ 781/ 781] D_loss: 112338971656192.00000000
+Epoch: [85] [ 781/ 781] D_loss: 153552714465280.00000000
+Epoch: [86] [ 781/ 781] D_loss: 39532808.00000000
+Epoch: [87] [ 781/ 781] D_loss: 1501410361344.00000000
+Epoch: [88] [ 781/ 781] D_loss: 772523584.00000000
+Epoch: [89] [ 781/ 781] D_loss: 147794256.00000000
+Epoch: [90] [ 781/ 781] D_loss: 54756915544064.00000000
+Epoch: [91] [ 781/ 781] D_loss: 5849262063616.00000000
+Epoch: [92] [ 781/ 781] D_loss: 5824183271424.00000000
+Epoch: [93] [ 781/ 781] D_loss: 4028208250880.00000000
+Epoch: [94] [ 781/ 781] D_loss: 6509064880128.00000000
+Epoch: [95] [ 781/ 781] D_loss: 7866388316160.00000000
+Epoch: [96] [ 781/ 781] D_loss: 3718297419776.00000000
+Epoch: [97] [ 781/ 781] D_loss: 20334797389824.00000000
+Epoch: [98] [ 781/ 781] D_loss: 16840737685504.00000000
+Epoch: [99] [ 781/ 781] D_loss: 1758347919360.00000000
+Epoch: [100] [ 781/ 781] D_loss: 1847848337408.00000000
+Epoch: [101] [ 781/ 781] D_loss: 10075599011840.00000000
+Epoch: [102] [ 781/ 781] D_loss: 1085100457984.00000000
+Epoch: [103] [ 781/ 781] D_loss: 566225207296.00000000
+Epoch: [104] [ 781/ 781] D_loss: 451948281856.00000000
+Epoch: [105] [ 781/ 781] D_loss: 250140256.00000000
+Epoch: [106] [ 781/ 781] D_loss: 892532.43750000
+Epoch: [107] [ 781/ 781] D_loss: 122401882112.00000000
+Epoch: [108] [ 781/ 781] D_loss: 1169559.87500000
+Epoch: [109] [ 781/ 781] D_loss: 111271698432.00000000
+Epoch: [110] [ 781/ 781] D_loss: 107409620992.00000000
+Epoch: [111] [ 781/ 781] D_loss: 131760062464.00000000
+Epoch: [112] [ 781/ 781] D_loss: 220949936.00000000
+Epoch: [113] [ 781/ 781] D_loss: 2358859268096.00000000
+Epoch: [114] [ 781/ 781] D_loss: 33106782.00000000
+Epoch: [115] [ 781/ 781] D_loss: 123537940480.00000000
+Epoch: [116] [ 781/ 781] D_loss: 3300883431424.00000000
+Epoch: [117] [ 781/ 781] D_loss: 12550853.00000000
+Epoch: [118] [ 781/ 781] D_loss: 796518.62500000
+Epoch: [119] [ 781/ 781] D_loss: 199822704640.00000000
+Epoch: [120] [ 781/ 781] D_loss: 1864394473472.00000000
+Epoch: [121] [ 781/ 781] D_loss: 295335362560.00000000
+Epoch: [122] [ 781/ 781] D_loss: 1505524842496.00000000
+Epoch: [123] [ 781/ 781] D_loss: 724936097792.00000000
+Epoch: [124] [ 781/ 781] D_loss: 159658082304.00000000
+Epoch: [125] [ 781/ 781] D_loss: 103004545024.00000000
+Epoch: [126] [ 781/ 781] D_loss: 169946759168.00000000
+Epoch: [127] [ 781/ 781] D_loss: 462736785408.00000000
+Epoch: [128] [ 781/ 781] D_loss: 134411108352.00000000
+Epoch: [129] [ 781/ 781] D_loss: 4709823807488.00000000
+Epoch: [130] [ 781/ 781] D_loss: 439924.65625000
+Epoch: [131] [ 781/ 781] D_loss: 2489917636608.00000000
+Epoch: [132] [ 781/ 781] D_loss: 115216.65625000
+Epoch: [133] [ 781/ 781] D_loss: 36470251520.00000000
+Epoch: [134] [ 781/ 781] D_loss: 61239.58984375
+Epoch: [135] [ 781/ 781] D_loss: 51764.01562500
+Epoch: [136] [ 781/ 781] D_loss: 579176.68750000
+Epoch: [137] [ 781/ 781] D_loss: 27758661632.00000000
+Epoch: [138] [ 781/ 781] D_loss: 20276166656.00000000
+Epoch: [139] [ 781/ 781] D_loss: 35267248128.00000000
+Epoch: [140] [ 781/ 781] D_loss: 9242167296.00000000
+Epoch: [141] [ 781/ 781] D_loss: 63361495040.00000000
+Epoch: [142] [ 781/ 781] D_loss: 76647.51562500
+Epoch: [143] [ 781/ 781] D_loss: 2073622.62500000
+Epoch: [144] [ 781/ 781] D_loss: 118603685888.00000000
+Epoch: [145] [ 781/ 781] D_loss: 276578.75000000
+Epoch: [146] [ 781/ 781] D_loss: 49314226176.00000000
+Epoch: [147] [ 781/ 781] D_loss: 36102397952.00000000
+Epoch: [148] [ 781/ 781] D_loss: 3237381144576.00000000
+Epoch: [149] [ 781/ 781] D_loss: 86274.02343750
+Epoch: [150] [ 781/ 781] D_loss: 46308.43359375
+Epoch: [151] [ 781/ 781] D_loss: 217677.93750000
+Epoch: [152] [ 781/ 781] D_loss: 1452074729472.00000000
+Epoch: [153] [ 781/ 781] D_loss: 242347851776.00000000
+Epoch: [154] [ 781/ 781] D_loss: 145938055168.00000000
+Epoch: [155] [ 781/ 781] D_loss: 202205085696.00000000
+Epoch: [156] [ 781/ 781] D_loss: 7600.24218750
+Epoch: [157] [ 781/ 781] D_loss: 75812.35937500
+Epoch: [158] [ 781/ 781] D_loss: 8851561472.00000000
+Epoch: [159] [ 781/ 781] D_loss: 17015307264.00000000
+Epoch: [160] [ 781/ 781] D_loss: 107341709312.00000000
+Epoch: [161] [ 781/ 781] D_loss: 172634.15625000
+Epoch: [162] [ 781/ 781] D_loss: 35257.91015625
+Epoch: [163] [ 781/ 781] D_loss: 727327.43750000
+Epoch: [164] [ 781/ 781] D_loss: 690708.50000000
+Epoch: [165] [ 781/ 781] D_loss: 23250.82617188
+Epoch: [166] [ 781/ 781] D_loss: 33146562560.00000000
+Epoch: [167] [ 781/ 781] D_loss: 2140090793984.00000000
+Epoch: [168] [ 781/ 781] D_loss: 1942919680.00000000
+Epoch: [169] [ 781/ 781] D_loss: 17554438144.00000000
+Epoch: [170] [ 781/ 781] D_loss: 29614.82617188
+Epoch: [171] [ 781/ 781] D_loss: 1481218048.00000000
+Epoch: [172] [ 781/ 781] D_loss: 2201592320.00000000
+Epoch: [173] [ 781/ 781] D_loss: 889786.87500000
+Epoch: [174] [ 781/ 781] D_loss: 219248.09375000
+Epoch: [175] [ 781/ 781] D_loss: 40006.76171875
+Epoch: [176] [ 781/ 781] D_loss: 716589248.00000000
+Epoch: [177] [ 781/ 781] D_loss: 1244751360.00000000
+Epoch: [178] [ 781/ 781] D_loss: 244402512.00000000
+Epoch: [179] [ 781/ 781] D_loss: 2426894848.00000000
+Epoch: [180] [ 781/ 781] D_loss: 13842677760.00000000
+Epoch: [181] [ 781/ 781] D_loss: 163177616.00000000
+Epoch: [182] [ 781/ 781] D_loss: 408727424.00000000
+Epoch: [183] [ 781/ 781] D_loss: 180806400.00000000
+Epoch: [184] [ 781/ 781] D_loss: 121511024.00000000
+Epoch: [185] [ 781/ 781] D_loss: 158168512.00000000
+Epoch: [186] [ 781/ 781] D_loss: 414512896.00000000
+Epoch: [187] [ 781/ 781] D_loss: 192875088.00000000
+Epoch: [188] [ 781/ 781] D_loss: 447011968.00000000
+Epoch: [189] [ 781/ 781] D_loss: 11855.30468750
+Epoch: [190] [ 781/ 781] D_loss: 3021.69580078
+Epoch: [191] [ 781/ 781] D_loss: 121415856.00000000
+Epoch: [192] [ 781/ 781] D_loss: 111835288.00000000
+Epoch: [193] [ 781/ 781] D_loss: 106123376.00000000
+Epoch: [194] [ 781/ 781] D_loss: 34721920.00000000
+Epoch: [195] [ 781/ 781] D_loss: 3763838208.00000000
+Epoch: [196] [ 781/ 781] D_loss: -19079.58593750
+Epoch: [197] [ 781/ 781] D_loss: 35574376.00000000
+Epoch: [198] [ 781/ 781] D_loss: 1827356544.00000000
+Epoch: [199] [ 781/ 781] D_loss: 17389510656.00000000
+Epoch: [200] [ 781/ 781] D_loss: 33682040.00000000
+Epoch: [201] [ 781/ 781] D_loss: -341868.53125000
+Epoch: [202] [ 781/ 781] D_loss: 236524416.00000000
+Epoch: [203] [ 781/ 781] D_loss: 78561584.00000000
+Epoch: [204] [ 781/ 781] D_loss: 316949.87500000
+Epoch: [205] [ 781/ 781] D_loss: 228798304.00000000
+Epoch: [206] [ 781/ 781] D_loss: 67532752.00000000
+Epoch: [207] [ 781/ 781] D_loss: 41117296.00000000
+Epoch: [208] [ 781/ 781] D_loss: 634855552.00000000
+Epoch: [209] [ 781/ 781] D_loss: 178046336.00000000
+Epoch: [210] [ 781/ 781] D_loss: 540080128.00000000
+Epoch: [211] [ 781/ 781] D_loss: 48854884.00000000
+Epoch: [212] [ 781/ 781] D_loss: 395058528.00000000
+Epoch: [213] [ 781/ 781] D_loss: 149060.34375000
+Epoch: [214] [ 781/ 781] D_loss: 884256.75000000
+Epoch: [215] [ 781/ 781] D_loss: 17453826.00000000
+Epoch: [216] [ 781/ 781] D_loss: -1686579.87500000
+Epoch: [217] [ 781/ 781] D_loss: 142364224.00000000
+Epoch: [218] [ 781/ 781] D_loss: 121774432.00000000
+Epoch: [219] [ 781/ 781] D_loss: 126032232.00000000
+Epoch: [220] [ 781/ 781] D_loss: 28544790.00000000
+Epoch: [221] [ 781/ 781] D_loss: 10606623.00000000
+Epoch: [222] [ 781/ 781] D_loss: -24683696.00000000
+Epoch: [223] [ 781/ 781] D_loss: -3057876.25000000
+Epoch: [224] [ 781/ 781] D_loss: 210.38250732
+Epoch: [225] [ 781/ 781] D_loss: 180799008.00000000
+Epoch: [226] [ 781/ 781] D_loss: 47227932.00000000
+Epoch: [227] [ 781/ 781] D_loss: 973330944.00000000
+Epoch: [228] [ 781/ 781] D_loss: 59661152.00000000
+Epoch: [229] [ 781/ 781] D_loss: 3870.01318359
+Epoch: [230] [ 781/ 781] D_loss: 682690048.00000000
+Epoch: [231] [ 781/ 781] D_loss: 1107705472.00000000
+Epoch: [232] [ 781/ 781] D_loss: 19390372.00000000
+Epoch: [233] [ 781/ 781] D_loss: 203038368.00000000
+Epoch: [234] [ 781/ 781] D_loss: 30569306.00000000
+Epoch: [235] [ 781/ 781] D_loss: 10599.83007812
+Epoch: [236] [ 781/ 781] D_loss: 821.94580078
+Epoch: [237] [ 781/ 781] D_loss: 58280908.00000000
+Epoch: [238] [ 781/ 781] D_loss: 587527424.00000000
+Epoch: [239] [ 781/ 781] D_loss: 139988304.00000000
+Epoch: [240] [ 781/ 781] D_loss: 35882144.00000000
+Epoch: [241] [ 781/ 781] D_loss: 1395878656.00000000
+Epoch: [242] [ 781/ 781] D_loss: 109536720.00000000
+Epoch: [243] [ 781/ 781] D_loss: 82378168.00000000
+Epoch: [244] [ 781/ 781] D_loss: 228530912.00000000
+Epoch: [245] [ 781/ 781] D_loss: 14062352.00000000
+Epoch: [246] [ 781/ 781] D_loss: 8135942.00000000
+Epoch: [247] [ 781/ 781] D_loss: -196116.68750000
+Epoch: [248] [ 781/ 781] D_loss: 31.74964905
+Epoch: [249] [ 781/ 781] D_loss: 11119194.00000000
+Epoch: [250] [ 781/ 781] D_loss: 169393888.00000000
+Epoch: [251] [ 781/ 781] D_loss: 123687272.00000000
+Epoch: [252] [ 781/ 781] D_loss: -12107796.00000000
+Epoch: [253] [ 781/ 781] D_loss: 366504192.00000000
+Epoch: [254] [ 781/ 781] D_loss: 368754950144.00000000
+Epoch: [255] [ 781/ 781] D_loss: 12837783552.00000000
+Epoch: [256] [ 781/ 781] D_loss: 325636992.00000000
+Epoch: [257] [ 781/ 781] D_loss: 8882156.00000000
+Epoch: [258] [ 781/ 781] D_loss: -36513264.00000000
+Epoch: [259] [ 781/ 781] D_loss: -14469265.00000000
+Epoch: [260] [ 781/ 781] D_loss: -11686408.00000000
+Epoch: [261] [ 781/ 781] D_loss: 5538876.00000000
+Epoch: [262] [ 781/ 781] D_loss: 290060032.00000000
+Epoch: [263] [ 781/ 781] D_loss: 5850284.50000000
+Epoch: [264] [ 781/ 781] D_loss: -16354753.00000000
+Epoch: [265] [ 781/ 781] D_loss: 36069076.00000000
+Epoch: [266] [ 781/ 781] D_loss: 2854630.00000000
+Epoch: [267] [ 781/ 781] D_loss: 3118432.00000000
+Epoch: [268] [ 781/ 781] D_loss: -22817162.00000000
+Epoch: [269] [ 781/ 781] D_loss: 9.28382397
+Epoch: [270] [ 781/ 781] D_loss: 228.37255859
+Epoch: [271] [ 781/ 781] D_loss: 1792.57104492
+Epoch: [272] [ 781/ 781] D_loss: 7333946.00000000
+Epoch: [273] [ 781/ 781] D_loss: 70.77770996
+Epoch: [274] [ 781/ 781] D_loss: 305486848.00000000
+Epoch: [275] [ 781/ 781] D_loss: 268.12789917
+Epoch: [276] [ 781/ 781] D_loss: 15728628.00000000
+Epoch: [277] [ 781/ 781] D_loss: 37736936.00000000
+Epoch: [278] [ 781/ 781] D_loss: 15032849.00000000
+Epoch: [279] [ 781/ 781] D_loss: 8150.70410156
+Epoch: [280] [ 781/ 781] D_loss: 15736729.00000000
+Epoch: [281] [ 781/ 781] D_loss: 6394843.50000000
+Epoch: [282] [ 781/ 781] D_loss: 3735543.50000000
+Epoch: [283] [ 781/ 781] D_loss: 19410870.00000000
+Epoch: [284] [ 781/ 781] D_loss: 780078.75000000
+Epoch: [285] [ 781/ 781] D_loss: 2275258.00000000
+Epoch: [286] [ 781/ 781] D_loss: -1838.07934570
+Epoch: [287] [ 781/ 781] D_loss: 4889539.50000000
+Epoch: [288] [ 781/ 781] D_loss: 2909.47998047
+Epoch: [289] [ 781/ 781] D_loss: 5905437.00000000
+Epoch: [290] [ 781/ 781] D_loss: 16510796800.00000000
+Epoch: [291] [ 781/ 781] D_loss: 4509436.00000000
+Epoch: [292] [ 781/ 781] D_loss: 14911414.00000000
+Epoch: [293] [ 781/ 781] D_loss: 5469117.00000000
+Epoch: [294] [ 781/ 781] D_loss: -206132.62500000
+Epoch: [295] [ 781/ 781] D_loss: -51997.87500000
+Epoch: [296] [ 781/ 781] D_loss: 8028471.00000000
+Epoch: [297] [ 781/ 781] D_loss: 35240908.00000000
+Epoch: [298] [ 781/ 781] D_loss: 1152084.12500000
+Epoch: [299] [ 781/ 781] D_loss: 538300.37500000
+Epoch: [300] [ 781/ 781] D_loss: -4724486.50000000
+Epoch: [301] [ 781/ 781] D_loss: 5866785.00000000
+Epoch: [302] [ 781/ 781] D_loss: 7767962.00000000
+Epoch: [303] [ 781/ 781] D_loss: -1745501.75000000
+Epoch: [304] [ 781/ 781] D_loss: 16645792.00000000
+Epoch: [305] [ 781/ 781] D_loss: 690358400.00000000
+Epoch: [306] [ 781/ 781] D_loss: 53012.42968750
+Epoch: [307] [ 781/ 781] D_loss: 480647.87500000
+Epoch: [308] [ 781/ 781] D_loss: 159199657984.00000000
+Epoch: [309] [ 781/ 781] D_loss: 15462248.00000000
+Epoch: [310] [ 781/ 781] D_loss: 506372.87500000
+Epoch: [311] [ 781/ 781] D_loss: 8074705.50000000
+Epoch: [312] [ 781/ 781] D_loss: 5059647.50000000
+Epoch: [313] [ 781/ 781] D_loss: -2201700.50000000
+Epoch: [314] [ 781/ 781] D_loss: -444561.50000000
+Epoch: [315] [ 781/ 781] D_loss: 194394.90625000
+Epoch: [316] [ 781/ 781] D_loss: 117208800.00000000
+Epoch: [317] [ 781/ 781] D_loss: 2886898.50000000
+Epoch: [318] [ 781/ 781] D_loss: 9013.26562500
+Epoch: [319] [ 781/ 781] D_loss: -7866.95605469
+Epoch: [320] [ 781/ 781] D_loss: 3640891.50000000
+Epoch: [321] [ 781/ 781] D_loss: 2428748.00000000
+Epoch: [322] [ 781/ 781] D_loss: 16147.53222656
+Epoch: [323] [ 781/ 781] D_loss: -5649.40625000
+Epoch: [324] [ 781/ 781] D_loss: 2616.41503906
+Epoch: [325] [ 781/ 781] D_loss: 855780160.00000000
+Epoch: [326] [ 781/ 781] D_loss: 1725.88012695
+Epoch: [327] [ 781/ 781] D_loss: 251398704.00000000
+Epoch: [328] [ 781/ 781] D_loss: 1783334.75000000
+Epoch: [329] [ 781/ 781] D_loss: 42340.24609375
+Epoch: [330] [ 781/ 781] D_loss: 863345.37500000
+Epoch: [331] [ 781/ 781] D_loss: 131359552.00000000
+Epoch: [332] [ 781/ 781] D_loss: 2284104.75000000
+Epoch: [333] [ 781/ 781] D_loss: 55701060.00000000
+Epoch: [334] [ 781/ 781] D_loss: 1452403.00000000
+Epoch: [335] [ 781/ 781] D_loss: 12177124.00000000
+Epoch: [336] [ 781/ 781] D_loss: -21014.01953125
+Epoch: [337] [ 781/ 781] D_loss: 109226176.00000000
+Epoch: [338] [ 781/ 781] D_loss: 156718432.00000000
+Epoch: [339] [ 781/ 781] D_loss: 2580744.00000000
+Epoch: [340] [ 781/ 781] D_loss: 290651296.00000000
+Epoch: [341] [ 781/ 781] D_loss: -1029605.00000000
+Epoch: [342] [ 781/ 781] D_loss: 24384.29687500
+Epoch: [343] [ 781/ 781] D_loss: 23766.62109375
+Epoch: [344] [ 781/ 781] D_loss: -2395816.00000000
+Epoch: [345] [ 781/ 781] D_loss: 649479424.00000000
+Epoch: [346] [ 781/ 781] D_loss: 62230352.00000000
+Epoch: [347] [ 781/ 781] D_loss: 192894.00000000
+Epoch: [348] [ 781/ 781] D_loss: 1025605.50000000
+Epoch: [349] [ 781/ 781] D_loss: 91566880.00000000
+Epoch: [350] [ 781/ 781] D_loss: 215298384.00000000
+Epoch: [351] [ 781/ 781] D_loss: 221249696.00000000

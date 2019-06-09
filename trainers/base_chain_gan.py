@@ -40,7 +40,16 @@ def generate_images(generator, directory_name, is_gpu=True, w_labels=False, epoc
                 filename = "Ep" + epoch + "_" + "sample%d"%j + "_edited%d"%i 
                 
             utils.save_image(image.cpu().detach().numpy(), filename, directory_name)
-    
+
+def generate_dataset_images(directory_name, dataloader, epoch):
+    num_samples = 8
+    images, _ = next(dataloader)
+    images = images.view(-1, 3, 32, 32)[:num_samples]
+    for image in images:
+        image = image.view(3,32,32).mul(0.5).add(0.5)
+        file_name = "Ep" + epoch + "_" + "dataset_sample%d"%j
+        utils.save_image(image.cpu().detach().numpy(), file_name, directory_name)
+     
 class base_chain_gan(object):
     def __init__(self, data_loader, generator, discriminator, hyper_param_dict, directory_name, editor_object_list=None, num_editors=0):
         # parameters
@@ -185,7 +194,8 @@ class base_chain_gan(object):
             #utils.plot_editor_scores(self.G, self.D, self.gpu_mode, self.num_edit_generators, 
             #        directory_name + "/d_scores", epoch) 
             #utils.compute_wass_distance(sample_images, self.D, self.G, directory_name + "/wass_distance", epoch)
-            
+            generate_dataset_images(self.directory_name, self.data_loader, str(epoch))    
+                    
             if (epoch % 25)==0 and epoch != 0:
                 G_optimizers_dict = [g_optim.state_dict() for g_optim in self.G_optimizers]
                 save_dict = {'epoch' : epoch,

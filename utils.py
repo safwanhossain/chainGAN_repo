@@ -91,9 +91,10 @@ def get_data():
     CIFAR10_train = dataset.CIFAR10(root="./data", train=True, transform=transforms.Compose(
         [transforms.ToTensor(),transforms.Normalize((0.5,0.5,0.5), (0.5,0.5,0.5))]), download=True)
     CIFAR10_train_data = [data[0].numpy() for data in CIFAR10_train]
+    CIFAR10_train_labels = [torch.LongTensor([data[1]]) for data in CIFAR10_train]
     
     CIFAR10_train_data = torch.FloatTensor(CIFAR10_train_data)
-    CIFAR10_train_labels = torch.LongTensor(CIFAR10_train.train_labels)
+    CIFAR10_train_labels = torch.LongTensor(CIFAR10_train_labels)
     return CIFAR10_train_data, CIFAR10_train_labels
 
 def create_dataset(mnist_train_data, mnist_train_labels, batch_size):

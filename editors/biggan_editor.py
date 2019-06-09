@@ -22,10 +22,10 @@ class ResBlock(nn.Module):
         self.main_module = nn.Sequential(
             nn.BatchNorm2d(num_in_channels),
             nn.ReLU(),
-            nn.Conv2d(num_in_channels,num_out_channels//2,3,padding=1),
-            nn.BatchNorm2d(num_out_channels//2),
+            nn.Conv2d(num_in_channels,num_in_channels//2,3,padding=1),
+            nn.BatchNorm2d(num_in_channels//2),
             nn.ReLU(),
-            nn.Conv2d(num_out_channels//2,num_out_channels,3,padding=1)
+            nn.Conv2d(num_in_channels//2,num_out_channels,3,padding=1)
         )
         self.skip = nn.Sequential(
             nn.Conv2d(num_in_channels,num_out_channels,1)

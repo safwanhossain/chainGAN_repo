@@ -35,10 +35,24 @@ class ResBlockUp(nn.Module):
     def forward(self, x):
         return self.main_module(x) + self.skip(x)
 
+class ResBlockUpNoResidual(nn.Module):
+    def __init__(self, num_in_channels, num_out_channels, scale):
+        super(ResBlockUpNoResidual, self).__init__()
+        self.main_module = nn.Sequential(
+	    nn.Upsample(scale_factor=scale),
+            nn.Conv2d(num_in_channels, num_in_channels//2,3,padding=1),
+            nn.BatchNorm2d(num_in_channels//2),
+            nn.ReLU(),
+            nn.Conv2d(num_in_channels//2,num_out_channels,3,padding=1)
+        )
+    def forward(self, x):
+        return self.main_module(x)
+
 class biggan_gen(nn.Module):
     def __init__(self,channel_list,end_pic_dim=28,z_dim=128,rgb=False):
         super(biggan_gen,self).__init__()
-        block_list = [ResBlockUp(in_channel, out_channel, scale) for in_channel, out_channel, scale in channel_list]
+        block_list = [ResBlockUpNoResidual(in_channel, out_channel, scale) for in_channel, out_channel, scale in channel_list[0]]
+        block_list += [ResBlockUp(in_channel, out_channel, scale) for in_channel, out_channel, scale in channel_list[1:]]
         self.blocks = nn.Sequential(*block_list)
         begin_dim = end_pic_dim
         for _,_,scale in channel_list:

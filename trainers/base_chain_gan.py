@@ -45,9 +45,9 @@ def generate_dataset_images(directory_name, dataloader, epoch):
     num_samples = 8
     images, _ = next(dataloader)
     images = images.view(-1, 3, 32, 32)[:num_samples]
-    for image in images:
+    for i, image in enumerate(images):
         image = image.view(3,32,32).mul(0.5).add(0.5)
-        file_name = "Ep" + epoch + "_" + "dataset_sample%d"%j
+        file_name = "Ep" + epoch + "_" + "dataset_sample%d"%i
         utils.save_image(image.cpu().detach().numpy(), file_name, directory_name)
      
 class base_chain_gan(object):
@@ -189,12 +189,12 @@ class base_chain_gan(object):
 
             print("Epoch: [%2d] [%4d/%4d] D_loss: %.8f" %
                           ((epoch + 1), (i + 1), len(self.data_loader), self.train_hist['D_loss'][-1]))
-            
+
             generate_images(self.G, self.directory_name, w_labels=False, epoch=str(epoch))
             #utils.plot_editor_scores(self.G, self.D, self.gpu_mode, self.num_edit_generators, 
             #        directory_name + "/d_scores", epoch) 
             #utils.compute_wass_distance(sample_images, self.D, self.G, directory_name + "/wass_distance", epoch)
-            generate_dataset_images(self.directory_name, self.data_loader, str(epoch))    
+            generate_dataset_images(self.directory_name, self.data_sampler, str(epoch))    
                     
             if (epoch % 25)==0 and epoch != 0:
                 G_optimizers_dict = [g_optim.state_dict() for g_optim in self.G_optimizers]

@@ -51,7 +51,8 @@ class ResBlockUpNoResidual(nn.Module):
 class biggan_gen(nn.Module):
     def __init__(self,channel_list,end_pic_dim=28,z_dim=128,rgb=False):
         super(biggan_gen,self).__init__()
-        block_list = [ResBlockUpNoResidual(in_channel, out_channel, scale) for in_channel, out_channel, scale in channel_list[0]]
+        in_channel, out_channel, scale = channel_list[0]
+        block_list = [ResBlockUpNoResidual(in_channel, out_channel, scale)]
         block_list += [ResBlockUp(in_channel, out_channel, scale) for in_channel, out_channel, scale in channel_list[1:]]
         self.blocks = nn.Sequential(*block_list)
         begin_dim = end_pic_dim
